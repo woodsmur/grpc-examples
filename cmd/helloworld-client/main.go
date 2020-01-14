@@ -17,18 +17,17 @@ const (
 
 func main() {
 	// Set up a connection to the server.
-	addr := os.Getenv("SERVER_ADDR")
-	if addr == "" {
-		log.Printf("ENV SERVER_ADDR is empty, use `-addr` flag")
-		addr = *flag.String("addr", address, "server address")
-		log.Printf("addr in flag: %v", addr)
-	}
-	log.Printf("server addr : %v", addr)
-
 	name := flag.String("name", defaultName, "hello who?")
+	addr := flag.String("addr", address, "server address")
 	flag.Parse()
 
-	conn, err := grpc.Dial(addr, grpc.WithInsecure())
+	if addrEnv := os.Getenv("SERVER_ADDR"); addrEnv != "" {
+		log.Println("use SERVER_ADDR : %v", addrEnv)
+		*addr = addrEnv
+	}
+	log.Printf("server addr : %v", *addr)
+
+	conn, err := grpc.Dial(*addr, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 
