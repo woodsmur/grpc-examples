@@ -7,6 +7,7 @@ import (
 	pb "github.com/woodsmur/grpc-examples/helloworld/internal/proto/helloworld"
 	context "golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 const port = ":50051"
@@ -28,5 +29,7 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterGreeterServer(s, &server{})
+	// Register reflection service on gRPC server.
+	reflection.Register(s)
 	s.Serve(lis)
 }
