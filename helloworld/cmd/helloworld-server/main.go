@@ -7,6 +7,8 @@ import (
 	pb "github.com/woodsmur/grpc-examples/helloworld/internal/proto/helloworld"
 	context "golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 )
 
@@ -29,6 +31,11 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterGreeterServer(s, &server{})
+
+	server := health.NewServer()
+	grpc_health_v1.RegisterHealthServer(s, server)
+	server.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
+
 	// Register reflection service on gRPC server.
 	reflection.Register(s)
 	s.Serve(lis)
