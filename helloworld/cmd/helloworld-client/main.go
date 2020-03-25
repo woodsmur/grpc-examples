@@ -13,10 +13,11 @@ import (
 )
 
 var (
-	certFile = flag.String("cert_file", "", "The TLS cert file")
-	keyFile  = flag.String("key_file", "", "The TLS key file")
-	name     = flag.String("name", "world", "hello who?")
-	addr     = flag.String("addr", "localhost:50051", "server address")
+	certFile   = flag.String("cert_file", "", "The TLS cert file")
+	keyFile    = flag.String("key_file", "", "The TLS key file")
+	name       = flag.String("name", "world", "hello who?")
+	addr       = flag.String("addr", "localhost:50051", "server address")
+	serverName = flag.String("server_name", "helloworld.grpc.example.com", "Server name override")
 )
 
 func main() {
@@ -32,7 +33,7 @@ func main() {
 	var conn *grpc.ClientConn
 	var err error
 	if *certFile != "" {
-		creds, _ := credentials.NewClientTLSFromFile(*certFile, "")
+		creds, _ := credentials.NewClientTLSFromFile(*certFile, *serverName)
 		conn, err = grpc.Dial(*addr, grpc.WithTransportCredentials(creds))
 		if err != nil {
 			log.Fatalf("did not connect: %v with cert file : %v", err, *certFile)

@@ -12,12 +12,7 @@ build client
 
 create TLS certificate and private key
 
-    openssl req -x509 -nodes -newkey rsa:2048 -days 365 \
-        -keyout privkey.pem -out cert.pem -subj "/CN=grpc.example.com"
-
-write line to `/etc/hosts`
-
-    127.0.0.1 grpc.example.com
+    openssl req -x509 -new -newkey rsa:2048 -nodes -keyout server.key -out server.csr -subj "/CN=*.grpc.example.com"
 
 start server with TLS certificate
 
