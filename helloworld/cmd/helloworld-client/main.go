@@ -5,33 +5,45 @@ import (
 	"log"
 	"os"
 
+	"google.golang.org/grpc/credentials"
+
 	pb "github.com/woodsmur/grpc-examples/helloworld/internal/proto/helloworld"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 
-const (
-	address     = "localhost:50051"
-	defaultName = "world"
+var (
+	certFile = flag.String("cert_file", "", "The TLS cert file")
+	keyFile  = flag.String("key_file", "", "The TLS key file")
+	name     = flag.String("name", "world", "hello who?")
+	addr     = flag.String("addr", "localhost:50051", "server address")
 )
 
 func main() {
-	// Set up a connection to the server.
-	name := flag.String("name", defaultName, "hello who?")
-	addr := flag.String("addr", address, "server address")
 	flag.Parse()
 
+	// Set up a connection to the server.
 	if addrEnv := os.Getenv("SERVER_ADDR"); addrEnv != "" {
-		log.Println("use SERVER_ADDR : %v", addrEnv)
+		log.Printf("use SERVER_ADDR : %v", addrEnv)
 		*addr = addrEnv
 	}
 	log.Printf("server addr : %v", *addr)
 
-	conn, err := grpc.Dial(*addr, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-
+	var conn *grpc.ClientConn
+	var err error
+	if *certFile != "" {
+		creds, _ := credentials.NewClientTLSFromFile(*certFile, "")
+		conn, err = grpc.Dial(*addr, grpc.WithTransportCredentials(creds))
+		if err != nil {
+			log.Fatalf("did not connect: %v with cert file : %v", err, *certFile)
+		}
+	} else {
+		conn, err = grpc.Dial(*addr, grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("did not connect: %v", err)
+		}
 	}
+
 	defer conn.Close()
 	c := pb.NewGreeterClient(conn)
 
