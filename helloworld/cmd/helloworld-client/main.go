@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/grpc/credentials"
 
-	pb "github.com/woodsmur/grpc-examples/helloworld/internal/proto/helloworld"
+	pb "github.com/woodsmur/grpc-examples/helloworld/internal/pb/helloworld"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

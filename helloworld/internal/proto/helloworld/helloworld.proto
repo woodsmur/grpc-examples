@@ -2,7 +2,13 @@
 
 syntax = "proto3";
 
-// option go_package = "github.com/woodsmur/grpc-examples/helloworld/internal/helloworld";
+// option go_package = "github.com/woodsmur/grpc-examples/helloworld/internal/pb/helloworld";
+// option go_package = "../pb/helloworld;helloworld";
+// OK
+option go_package = "pb/helloworld;helloworld";
+
+// NOT OK
+// option go_package = "helloworld";
 
 package helloworld;
 
