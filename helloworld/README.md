@@ -31,3 +31,14 @@ start server
 start client
 
     ./helloworld-client
+
+# build proto
+
+install `protoc-gen-go`
+
+    go get -u -v github.com/golang/protobuf/protoc-gen-go
+
+build
+
+    cd internal
+    protoc --go_out=plugins=grpc:. proto/helloworld/helloworld.proto
